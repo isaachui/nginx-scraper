@@ -5,7 +5,7 @@ import (
 
 )
 
-func testDefaultParser(t *testing.T) {
+func TestDefaultParser(t *testing.T) {
 
   t.Log("testing default parser")
 
@@ -33,7 +33,7 @@ func testDefaultParser(t *testing.T) {
 
 }
 
-func testCustomParser(t *testing.T) {
+func TestCustomParser(t *testing.T) {
 
   t.Log("testing NewNginxParser")
 
@@ -56,7 +56,7 @@ func testCustomParser(t *testing.T) {
 
 }
 
-func testParseLineStatus(t *testing.T) {
+func TestParseLineStatus(t *testing.T) {
 
   np := NewDefaultParser()
 
@@ -76,7 +76,7 @@ func testParseLineStatus(t *testing.T) {
 
 }
 
-func testParseLineRequest(t *testing.T) {
+func TestParseLineRequest(t *testing.T) {
 
 
 }
