@@ -15,43 +15,42 @@ func TestDefaultParser(t *testing.T) {
   expected := `$remote_addr - $http_x_forwarded_for - $http_x_realip - [$time_local]  $scheme $http_x_forwarded_proto $x_forwarded_proto_or_scheme "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"`
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
   got = np.reference[0]
   expected = "$remote_addr"
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
 
   got = np.reference[3]
   expected = " - "
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
 
 }
 
 func TestCustomParser(t *testing.T) {
 
-  t.Log("testing NewNginxParser")
 
   customNginxLogFormat := `$remote_addr - "$request" - $status`
   np := NewNginxParser(customNginxLogFormat)
 
-  got := np.reference[4]
-  expected := "$status"
+  got := np.reference[0]
+  expected := "$remote_addr"
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
 
   got = np.reference[3]
-  expected = " - "
+  expected = "\" - "
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
 
 }
@@ -69,7 +68,7 @@ func TestParseLineStatus(t *testing.T) {
   }
 
   if got != expected {
-    t.Errorf("expected %v, but got %v", got, expected)
+    t.Errorf("expected %v, but got %v", expected, got)
   }
 
 

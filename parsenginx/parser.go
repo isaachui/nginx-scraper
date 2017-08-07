@@ -49,8 +49,13 @@ func NewNginxParser(format string) *nginxParser {
 				referenceElement += string(format[i])
 				i++
 
+				if i == len(format) {
+					break
+				}
 				byteArray = make([]byte, 0)
+
 				byteArray = append(byteArray, format[i])
+
 				isValid, _ = regexp.Match("^[A-Za-z_]", byteArray) // check if its valid
 			}
 
