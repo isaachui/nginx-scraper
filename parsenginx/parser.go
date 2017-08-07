@@ -1,6 +1,7 @@
 package parsenginx
 
 import (
+	"errors"
 	"regexp"
 	"strings"
 )
@@ -13,6 +14,15 @@ type nginxParser struct {
 	validVariables map[string]int //key stores nginx variable; value stores reference index
 }
 
+//defaultNginxLogFormat contains a default nginx log_format to start parsing
+const defaultNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_realip - [$time_local]  $scheme $http_x_forwarded_proto $x_forwarded_proto_or_scheme "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"`
+
+//NewDefaultParser creates a NewNginxParser with defaultNginxLogFormat as the parameter
+func NewDefaultParser() *nginxParser {
+	return NewNginxParser(defaultNginxLogFormat)
+}
+
+//NewNginxParser creats a nginxParser with all values filled in depending on the format string
 func NewNginxParser(format string) *nginxParser {
 	nP := new(nginxParser)
 	nP.logFormat = format
@@ -64,17 +74,18 @@ func NewNginxParser(format string) *nginxParser {
 
 	return nP
 }
+
+//isValidVariable wil check if the map validVariables contains the input string.
 func (p nginxParser) isValidVariable(input string) bool {
 	_, ok := p.validVariables[input]
 	return ok
 }
 
-func (p nginxParser) ParseLine(input, search string) string {
+//ParseLine will take in an nginx variable as a string "$example" and return the parameter as a string
+func (p nginxParser) ParseLine(input, search string) (string, error) {
 	if !p.isValidVariable(search) {
-		return "ERR invalid search variable"
+		return "", errors.New("not a valid search string")
 	}
-	//	i := 0 //i will contain the index of string
-	//j := 0 //j will contain the index of which reference we're on
 	mutableInputString := input
 	indexOfSearch := 0
 	foundData := false
@@ -85,17 +96,14 @@ func (p nginxParser) ParseLine(input, search string) string {
 		if !strings.Contains(value, "$") {
 			indexOfSearch = strings.Index(mutableInputString, value)
 			if foundData {
-				return mutableInputString[:indexOfSearch]
+				return mutableInputString[:indexOfSearch], nil
 			}
 			mutableInputString = mutableInputString[indexOfSearch+len(value):]
 		}
+
 	}
-
-	//looking for status code
-	return "hellO"
+	return "", errors.New("not found")
 }
-
-const defaultNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_realip - [$time_local]  $scheme $http_x_forwarded_proto $x_forwarded_proto_or_scheme "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"`
 
 //func main() {
 //
