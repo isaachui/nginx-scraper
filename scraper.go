@@ -16,6 +16,8 @@ import (
 	"time"
 )
 
+const defaultNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_realip - [$time_local]  $scheme $http_x_forwarded_proto $x_forwarded_proto_or_scheme "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent";`
+
 func main() {
 	fileLocation := "testfile"
 	logFile, logFileErr := os.Open(fileLocation)
