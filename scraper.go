@@ -8,7 +8,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -22,7 +24,32 @@ func main() {
 	}
 	defer logFile.Close()
 
+	// might not need this #################
+	logFileInfo, logFileInfoErr := logFile.Stat()
+	if logFileInfoErr != nil {
+		log.Fatal(logFileInfoErr)
+	}
+	fmt.Println(logFileInfo.Size())
+	//#######################################
+
+	var logLine string
+	var logReadErr error
+
+	logFile.Seek(0, 2) //moves to the bottom of the file to start reading
+
+	logReader := bufio.NewReader(logFile)
+
 	for {
+		//start reading at end of line
+		for {
+			logLine, logReadErr = logReader.ReadString('\n')
+			if logReadErr == io.EOF {
+				break // once we reach the EOF break out of this forloop
+			}
+			fmt.Print("parse Logline here: ", logLine)
+
+		}
+
 		fmt.Println("sleeping 5 seconds")
 		time.Sleep(5 * time.Second)
 	}
