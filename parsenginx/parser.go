@@ -104,13 +104,3 @@ func (p nginxParser) ParseLine(input, search string) (string, error) {
 	}
 	return "", errors.New("not found")
 }
-
-//func main() {
-//
-//	parser := NewNginxParser(defaultNginxLogFormat)
-//
-//	testLine := "50.112.166.232 - 50.112.166.232, 192.33.28.238, 50.112.166.232,127.0.0.1 - - - [03/Aug/2015:08:34:40 +0000]  http https,http https,http \"GET /api/v1/user HTTP/1.1\" 200 3350 \"https://release.dollarshaveclub.com/login\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0\""
-//	//	splitTestLine := strings.Split(testLine, " - ")
-//	fmt.Println(parser.parseLine(testLine, "$status"))
-//
-//}
