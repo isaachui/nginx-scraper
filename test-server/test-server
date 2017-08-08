@@ -9,8 +9,6 @@ server {
 	root /usr/share/nginx/html;
 	index index.html index.htm;
 
-	# Make site accessible from http://localhost/
-	server_name localhost;
   
   set $x_forwarded_proto_or_scheme $http_x_forwarded_proto;
   if ($http_x_forwarded_proto = "") {
