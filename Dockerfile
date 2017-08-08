@@ -11,11 +11,14 @@ WORKDIR /go/src/nginxscraper
 COPY nginxScraper/ nginxScraper/
 COPY parsenginx/ parsenginx/
 
-#main is located in nginxScraper folder
 WORKDIR /go/src/nginxscraper/nginxScraper
 
-RUN go build -o scraper .
+RUN go-wrapper download
+RUN go-wrapper install
 
-CMD ["./scraper"]
+##RUN go build -o /go/bin/scraper 
+
+CMD ["go-wrapper", "run"]
+
 
 
