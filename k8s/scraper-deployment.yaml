@@ -25,7 +25,7 @@ spec:
   containers:
 
   - name: test-server-container
-    image: test-server:3
+    image: test-server:1
     volumeMounts:
     - name: nginx-logs
       mountPath: /var/log/nginx/
@@ -41,7 +41,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-server-exposed
+  name: test-server-service
 spec:
   type: NodePort
   ports:
