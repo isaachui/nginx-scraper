@@ -24,11 +24,11 @@ const combinedNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_r
 
 func main() {
 
-	testing := true
+	testing := false
 	//switch directory to /var to read logs
 	os.Chdir("/var")
-	readFileLocation := "var/log/nginx/access.log"
-	writeFileLocation := "var/log/stats.log"
+	readFileLocation := "log/nginx/access.log"
+	writeFileLocation := "log/stats.log"
 
 	logFile, logFileErr := os.Open(readFileLocation)
 	if logFileErr != nil {
@@ -58,6 +58,13 @@ func main() {
 	var logLine string
 	var logReadErr error
 	statsDMap := make(map[string]int)
+
+	//ensure all 4 categories print every time
+	statsDMap["20x"] = 0
+	statsDMap["30x"] = 0
+	statsDMap["40x"] = 0
+	statsDMap["50x"] = 0
+
 	//statsDMap will contain key of error codes
 	//statsDMmap will contain value of number of instances
 
@@ -104,21 +111,21 @@ func main() {
 			//put status code into map
 			httpStatus, httpStatusError := np.ParseLine(logLine, "$status")
 			if httpStatusError != nil {
-				fmt.Println(httpStatusError)
 				continue
 			}
 
-			parsedHttpStatus := parseStatus(httpStatus)
+			parsedHttpStatus, valid := parseStatus(httpStatus)
 			//check if parsedHttpStatus is valid if its not within 200-599
-			if validStatus(parsedHttpStatus) == false {
+			if valid == false {
 				continue
 			}
-			numberOccurences, exists := statsDMap[parsedHttpStatus]
-			if exists {
-				statsDMap[parsedHttpStatus] = numberOccurences + 1
-			} else {
-				statsDMap[parsedHttpStatus] = 1
-			}
+			statsDMap[parsedHttpStatus] = statsDMap[parsedHttpStatus] + 1
+			//			numberOccurences, exists := statsDMap[parsedHttpStatus]
+			//			if exists {
+			//				statsDMap[parsedHttpStatus] = numberOccurences + 1
+			//			} else {
+			//				statsDMap[parsedHttpStatus] = 1
+			//			}
 
 			//put 50x routes in
 			if parsedHttpStatus == "50x" {
@@ -142,8 +149,14 @@ func main() {
 			statsFile.WriteString(key + ":" + strconv.Itoa(value) + "|s\n")
 			fmt.Print(key + ":" + strconv.Itoa(value) + "|s\n")
 		}
-		//flush map
+		//flush map and then add the 4 in
 		statsDMap = make(map[string]int)
+
+		//ensure all 4 categories print every time
+		statsDMap["20x"] = 0
+		statsDMap["30x"] = 0
+		statsDMap["40x"] = 0
+		statsDMap["50x"] = 0
 
 		//Account for file moved and truncated: reopen logfile
 		if fileMoved {
@@ -160,30 +173,19 @@ func main() {
 
 }
 
-func validStatus(status string) bool {
-	statusCode, err := strconv.ParseInt(status, 0, 64)
-	if err != nil {
-		return false
-	}
-	if statusCode <= 200 || statusCode >= 600 {
-		return false
-	}
-	return true
-}
-
-func parseStatus(status string) string {
-	statusCode, _ := strconv.ParseInt(status, 0, 64)
+func parseStatus(status string) (string, bool) {
+	statusCode, _ := strconv.Atoi(status)
 	switch {
 	case statusCode < 300:
-		return "20x"
+		return "20x", true
 	case statusCode < 400:
-		return "30x"
+		return "30x", true
 	case statusCode < 500:
-		return "40x"
+		return "40x", true
 	case statusCode < 600:
-		return "50x"
+		return "50x", true
 	}
-	return "ERR"
+	return "ERR", false
 }
 
 func parseRequest(request string) string {
