@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server-and-watcher
+  labels: 
+    app: scraper
+
+spec:
+  volumes:
+  - name: nginx-logs
+    emptyDir: {}
+
+  #affinity will assign the pod to another 
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - scraper
+        topologyKey: kubernetes.io/hostname
+
+  containers:
+
+  - name: test-server-container
+    image: test-server:3
+    volumeMounts:
+    - name: nginx-logs
+      mountPath: /var/log/nginx/
+
+  - name: scraper-container
+    image: scraper:1
+    volumeMounts:
+    - name: nginx-logs
+      mountPath: /var/log/nginx/
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-server-exposed
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+  selector: 
+    app: scraper
+    
