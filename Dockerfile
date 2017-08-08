@@ -15,7 +15,7 @@ WORKDIR /go/src/nginxscraper
 COPY scraper/ scraper/
 COPY parsenginx/ parsenginx/
 
-WORKDIR /go/src/nginxscraper/nginxScraper
+WORKDIR /go/src/nginxscraper/scraper
 
 RUN go-wrapper download
 RUN go-wrapper install
