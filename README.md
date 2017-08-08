@@ -12,7 +12,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
 
 ## How to test
 
-*Assumes MiniKube is setup correctly with docker environment*
+*Assumes Minikube is setup correctly with docker environment*
 
 ### 1. Build docker containers
 
@@ -51,7 +51,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
 
 ### 4. Test Webpage Status
 
-  If in MiniKube, running the following will give the proper URL
+  If in Minikube, running the following will give the proper URL
   ```
   minikube service test-server-service --url
   ```
