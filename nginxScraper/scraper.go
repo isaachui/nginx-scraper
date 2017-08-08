@@ -25,8 +25,10 @@ const combinedNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_r
 func main() {
 
 	testing := true
-	readFileLocation := "/var/log/nginx/access.log"
-	writeFileLocation := "../stats.log"
+	//switch directory to /var to read logs
+	os.Chdir("/var")
+	readFileLocation := "var/log/nginx/access.log"
+	writeFileLocation := "var/log/stats.log"
 
 	logFile, logFileErr := os.Open(readFileLocation)
 	if logFileErr != nil {
@@ -47,7 +49,6 @@ func main() {
 	if logFileInfoErr != nil {
 		log.Fatal(logFileInfoErr)
 	}
-	fmt.Println(logFileInfo.Size())
 
 	//Logrotate values
 	fileMoved := false
@@ -154,7 +155,6 @@ func main() {
 			logFile.Seek(0, 2) // move to end of file
 			fileTruncated = false
 		}
-		fmt.Println("sleeping 5 seconds")
 		time.Sleep(5 * time.Second)
 	}
 
