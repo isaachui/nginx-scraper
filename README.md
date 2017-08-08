@@ -6,9 +6,9 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
 
 
 ## Components
-* Go program + Dockerfile (scraper, parsenginx folders)
-* Test nginx server + Dockerfile (test-server folder)
-* Kubernetes Configuration (k8s folder)
+* Go program + Dockerfile _(scraper, parsenginx folders)_
+* Test nginx server + Dockerfile _(test-server folder)_
+* Kubernetes Configuration _(k8s folder)_
 
 ## How to test
 
