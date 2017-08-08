@@ -1,0 +1,68 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server ipv6only=on;
+
+  access_log /var/log/nginx/access.log testlog;
+  error_log /var/log/nginx/error.log;
+
+	root /usr/share/nginx/html;
+	index index.html index.htm;
+
+	# Make site accessible from http://localhost/
+	server_name localhost;
+  
+  set $x_forwarded_proto_or_scheme $http_x_forwarded_proto;
+  if ($http_x_forwarded_proto = "") {
+    set $x_forwarded_proto_or_scheme $scheme;
+  }
+
+	location / {
+		try_files $uri $uri/ =404;
+    default_type test/html;
+	}
+  
+
+  # Test for 20x status
+  location = /20x {
+    root /usr/share/nginx/html;
+    default_type text/html;
+    return 200 "ok";
+  }
+
+  # test for 30x status
+  location /30x {
+    return 301;
+  }
+
+  error_page 301 /30x.html; 
+  location = /30x.html {
+    root /usr/share/nginx/html;
+    internal;
+  }
+
+  # test for 40x status
+  location /40x {
+    return 400;
+  }
+
+  error_page 400 401 402 403 404 /40x.html;
+  location = /40x.html {
+    root /usr/share/nginx/html;
+    internal;
+  }
+
+  #test for 50x status
+  location /50x {
+    return 503;
+  }
+
+  location /test502page/location {
+    return 502;
+  }
+
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root /usr/share/nginx/html;
+    internal;
+  }
+}
