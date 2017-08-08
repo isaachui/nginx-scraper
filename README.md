@@ -4,6 +4,12 @@
 ## Objective
 To create a program that reads local nginx log at `/var/log/nginx/access.log`. This will happen every 5 seconds, summarizing new entries with a stats-d compatible message. The summary will be appended to `/var/log/stats.log`
 
+
+## Components
+* Go program + Dockerfile
+* Test nginx server + Dockerfile
+* Kubernetes Configuration
+
 ## How to test
 
 *Assumes MiniKube is setup correctly with docker environment*
@@ -50,7 +56,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   minikube service test-server-service --url
   ```
 
-  To test logs, the following are setup for http requests.
+  To test logs, the following are setup for http requests. For example: visiting `196.168.65.28:35000/50x` will give us a status code of 503 in the logs.
 
   | URL | Status Code |
   | --- | --- |
@@ -60,12 +66,11 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   | `<IP>:<Port>/50x` | 503 |
   | `<IP>:<Port>/test502page/location` | 502 |
 
+## Scraper program
 
-## Components
-* Go program + Dockerfile
-* Test nginx server + Dockerfile
-* Kubernetes Configuration
+Working directory: `scraper` folder
 
-Scraper.go contains the main function.
-
-package parsenginx contains helper functions to parse nginx log file given a log format string.
+To build the scraper program, run:
+```
+go build scraper.go
+```
