@@ -12,7 +12,7 @@ RUN ln -sf /dev/stdout /var/log/stats.log
 #make $GOPATH/src/app the working area
 RUN mkdir -p /go/src/nginxscraper
 WORKDIR /go/src/nginxscraper
-COPY nginxScraper/ nginxScraper/
+COPY scraper/ scraper/
 COPY parsenginx/ parsenginx/
 
 WORKDIR /go/src/nginxscraper/nginxScraper
