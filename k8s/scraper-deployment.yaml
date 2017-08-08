@@ -6,11 +6,12 @@ metadata:
     app: scraper
 
 spec:
+  #shared volume for logfiles
   volumes:
   - name: nginx-logs
     emptyDir: {}
 
-  #affinity will assign the pod to another 
+  #affinity will assign the pod to another node for high availability
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -37,7 +38,9 @@ spec:
       mountPath: /var/log/nginx/
     ports:
     - containerPort: 80
+
 ---
+### Service will expose port 80 for the nginx server
 apiVersion: v1
 kind: Service
 metadata:
