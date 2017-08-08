@@ -24,7 +24,6 @@ const combinedNginxLogFormat = `$remote_addr - $http_x_forwarded_for - $http_x_r
 
 func main() {
 
-	testing := false
 	//switch directory to /var to read logs
 	os.Chdir("/var")
 	readFileLocation := "log/nginx/access.log"
@@ -68,9 +67,7 @@ func main() {
 	//statsDMap will contain key of error codes
 	//statsDMmap will contain value of number of instances
 
-	if testing != true {
-		logFile.Seek(0, 2) //moves to the bottom of the file to start reading
-	}
+	logFile.Seek(0, 2) //moves to the bottom of the file to start reading
 
 	logReader := bufio.NewReader(logFile)
 
@@ -120,14 +117,8 @@ func main() {
 				continue
 			}
 			statsDMap[parsedHttpStatus] = statsDMap[parsedHttpStatus] + 1
-			//			numberOccurences, exists := statsDMap[parsedHttpStatus]
-			//			if exists {
-			//				statsDMap[parsedHttpStatus] = numberOccurences + 1
-			//			} else {
-			//				statsDMap[parsedHttpStatus] = 1
-			//			}
 
-			//put 50x routes in
+			//put unique 50x routes in
 			if parsedHttpStatus == "50x" {
 				httpRequest, httpRequestError := np.ParseLine(logLine, "$request")
 				if httpRequestError != nil {
@@ -140,14 +131,16 @@ func main() {
 				} else {
 					statsDMap[parsedHttpRequest] = 1
 				}
-
 			}
-
 		}
-		//  output map values to file
+
+		//Output map values to file
 		for key, value := range statsDMap {
+			//write to statsFile
 			statsFile.WriteString(key + ":" + strconv.Itoa(value) + "|s\n")
-			fmt.Print(key + ":" + strconv.Itoa(value) + "|s\n")
+
+			//will output to stdout within container if not commented out
+			//fmt.Print(key + ":" + strconv.Itoa(value) + "|s\n")
 		}
 		//flush map and then add the 4 in
 		statsDMap = make(map[string]int)
