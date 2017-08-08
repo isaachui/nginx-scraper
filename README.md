@@ -43,11 +43,25 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   kubectl logs -f server-and-watcher scraper-container
   ```
 
-
 4. **Test Webpage Status**
 
+  If in MiniKube, running the following will give the proper URL
+  ```
+  minikube service test-server-service --url
+  ```
 
-##
+  To test logs, the following are setup for http requests.
+
+  | URL | Status Code |
+  | --- | --- |
+  | `<IP>:<Port>/20x` | 200 |
+  | `<IP>:<Port>/30x` | 301 |
+  | `<IP>:<Port>/40x` | 400 |
+  | `<IP>:<Port>/50x` | 503 |
+  | `<IP>:<Port>/test502page/location` | 502 |
+
+
+## Components
 * Go program + Dockerfile
 * Test nginx server + Dockerfile
 * Kubernetes Configuration
