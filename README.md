@@ -14,7 +14,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
 
 *Assumes MiniKube is setup correctly with docker environment*
 
-### 1. **Build docker containers**
+### 1. Build docker containers
 
   working directory: nginx-scraper repo root
 
@@ -28,7 +28,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   docker build -t test-server:1 test-server/
   ```
 
-### 2. **Deploy Kubernetes Pod**
+### 2. Deploy Kubernetes Pod
 
   working directory: nginx-scraper repo root
 
@@ -37,7 +37,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   ```
   kubectl create -f k8s/scraper-deployment.yaml
   ```
-### 3. **Check Scraper Kubectl Logs**
+### 3. Check Scraper Kubectl Logs
 
   To check the logs of the scraper-container, run the following:
   ```
@@ -49,7 +49,7 @@ To create a program that reads local nginx log at `/var/log/nginx/access.log`. T
   kubectl logs -f server-and-watcher scraper-container
   ```
 
-### 4. **Test Webpage Status**
+### 4. Test Webpage Status
 
   If in MiniKube, running the following will give the proper URL
   ```
